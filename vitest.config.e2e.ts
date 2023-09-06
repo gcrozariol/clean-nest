@@ -11,6 +11,7 @@ export default defineConfig({
       '@src': './src',
       '@test': './test',
     },
+    setupFiles: ['./test/setup-e2e.ts'],
   },
   resolve: {
     alias: {
