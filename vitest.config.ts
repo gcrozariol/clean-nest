@@ -6,6 +6,16 @@ export default defineConfig({
   test: {
     globals: true,
     root: './',
+    alias: {
+      '@src': './src',
+      '@test': './test',
+    },
+  },
+  resolve: {
+    alias: {
+      '@src': './src',
+      '@test': './test',
+    },
   },
   plugins: [
     tsConfigPaths(),
