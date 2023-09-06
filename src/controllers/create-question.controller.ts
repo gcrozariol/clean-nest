@@ -1,5 +1,12 @@
 import { z } from 'zod'
-import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common'
+import {
+  Body,
+  ConflictException,
+  Controller,
+  HttpCode,
+  Post,
+  UseGuards,
+} from '@nestjs/common'
 import { CurrentUser } from 'src/auth/current-user-decorator'
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard'
 import { UserPayload } from 'src/auth/jwt.strategy'
@@ -25,10 +32,20 @@ export class CreateQuestionController {
     @Body(bodyValidatitonPipe) body: CreateQuestionBodySchema,
     @CurrentUser() user: UserPayload,
   ) {
-    const { sub: userId } = user
+    const userId = user.sub
     const { title, content } = body
 
     const slug = this.convertToSlug(content)
+
+    const slugExists = await this.prisma.question.findUnique({
+      where: {
+        slug,
+      },
+    })
+
+    if (slugExists) {
+      throw new ConflictException('Slug already exists.')
+    }
 
     await this.prisma.question.create({
       data: {
