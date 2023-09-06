@@ -31,5 +31,5 @@ Authorization: Bearer {{authToken}}
 
 {
   "title": "My new question!",
-  "content": "This is some content"
+  "content": "This is other content"
 }
