@@ -1,4 +1,3 @@
-import { it, describe, beforeEach, expect } from 'vitest'
 import { makeAnswer } from 'test/factories/make-answer'
 import { FetchQuestionAnswersUseCase } from './fetch-question-answers'
 import { InMemoryAnswersRepository } from 'test/repositories/in-memory-answers-repository'

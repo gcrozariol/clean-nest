@@ -3,28 +3,62 @@ import { AnswersRepository } from '@/domain/forum/application/repositories/answe
 import { Answer } from '@/domain/forum/enterprise/entities/answer'
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../prisma.service'
+import { PrismaAnswerMapper } from '../mappers/prisma-answer-mapper'
 
 @Injectable()
 export class PrismaAnswersRepository implements AnswersRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async findById(id: string) {
-    throw new Error('Method not implemented.')
+    const answer = await this.prisma.answer.findUnique({
+      where: {
+        id,
+      },
+    })
+
+    if (!answer) {
+      return null
+    }
+
+    return PrismaAnswerMapper.toDomain(answer)
   }
 
-  async findManyByQuestionId(questionId: string, params: PaginationParams) {
-    throw new Error('Method not implemented.')
+  async findManyByQuestionId(questionId: string, { page }: PaginationParams) {
+    const answers = await this.prisma.answer.findMany({
+      where: {
+        questionId,
+      },
+      take: 20,
+      skip: (page - 1) * 20,
+    })
+
+    return answers.map(PrismaAnswerMapper.toDomain)
   }
 
   async create(answer: Answer) {
-    throw new Error('Method not implemented.')
+    const data = PrismaAnswerMapper.toPrisma(answer)
+
+    await this.prisma.answer.create({ data })
   }
 
   async delete(answer: Answer) {
-    throw new Error('Method not implemented.')
+    const data = PrismaAnswerMapper.toPrisma(answer)
+
+    await this.prisma.answer.update({
+      where: {
+        id: data.id,
+      },
+      data,
+    })
   }
 
   async save(answer: Answer) {
-    throw new Error('Method not implemented.')
+    const data = PrismaAnswerMapper.toPrisma(answer)
+
+    await this.prisma.answer.delete({
+      where: {
+        id: data.id,
+      },
+    })
   }
 }

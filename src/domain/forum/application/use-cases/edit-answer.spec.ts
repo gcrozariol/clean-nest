@@ -1,4 +1,3 @@
-import { expect, it, describe, beforeEach } from 'vitest'
 import { makeAnswer } from 'test/factories/make-answer'
 import { EditAnswerUseCase } from './edit-answer'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'

@@ -1,4 +1,3 @@
-import { it, describe, beforeEach, expect } from 'vitest'
 import { FetchQuestionCommentsUseCase } from './fetch-question-comments'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'
 import { InMemoryQuestionCommentsRepository } from 'test/repositories/in-memory-question-comments-repository'

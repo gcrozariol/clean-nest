@@ -1,4 +1,3 @@
-import { expect, it, describe, beforeEach } from 'vitest'
 import { CreateQuestionUseCase } from './create-question'
 import { InMemoryQuestionsRepository } from 'test/repositories/in-memory-questions-repository'
 import { UniqueEntityID } from '@/core/entities/unique-entity-id'

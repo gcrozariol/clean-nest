@@ -1,4 +1,3 @@
-import { expect, it, describe, beforeEach } from 'vitest'
 import { InMemoryAnswersRepository } from 'test/repositories/in-memory-answers-repository'
 import { AnswerQuestionUseCase } from './answer-question'
 import { InMemoryAnswerAttachmentsRepository } from 'test/repositories/in-memory-answer-attachments-repository'

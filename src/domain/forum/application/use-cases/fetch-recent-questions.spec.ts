@@ -1,4 +1,3 @@
-import { it, describe, beforeEach, expect } from 'vitest'
 import { InMemoryQuestionsRepository } from 'test/repositories/in-memory-questions-repository'
 import { makeQuestion } from 'test/factories/make-question'
 import { FetchRecentQuestionsUseCase } from './fetch-recent-questions'
