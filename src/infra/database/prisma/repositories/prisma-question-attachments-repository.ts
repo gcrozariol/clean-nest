@@ -1,18 +1,29 @@
-// import { QuestionAttachmentsRepository } from '@/domain/forum/application/repositories/question-attachments-repository'
-// import { Injectable } from '@nestjs/common'
-// import { PrismaService } from '../prisma.service'
+import { QuestionAttachmentsRepository } from '@/domain/forum/application/repositories/question-attachments-repository'
+import { Injectable } from '@nestjs/common'
+import { PrismaService } from '../prisma.service'
+import { PrismaQuestionAttachmentMapper } from '../mappers/prisma-question-attachment-mapper'
 
-// @Injectable()
-// export class PrismaQuestionAttachmentsRepository
-//   implements QuestionAttachmentsRepository
-// {
-//   constructor(private readonly prisma: PrismaService) {}
+@Injectable()
+export class PrismaQuestionAttachmentsRepository
+  implements QuestionAttachmentsRepository
+{
+  constructor(private readonly prisma: PrismaService) {}
 
-//   async findManyByQuestionId(questionId: string) {
-//     throw new Error('Method not implemented.')
-//   }
+  async findManyByQuestionId(questionId: string) {
+    const questionAttachments = await this.prisma.attachment.findMany({
+      where: {
+        questionId,
+      },
+    })
 
-//   async deleteManyByQuestionId(questionId: string) {
-//     throw new Error('Method not implemented.')
-//   }
-// }
+    return questionAttachments.map(PrismaQuestionAttachmentMapper.toDomain)
+  }
+
+  async deleteManyByQuestionId(questionId: string) {
+    await this.prisma.attachment.deleteMany({
+      where: {
+        questionId,
+      },
+    })
+  }
+}
