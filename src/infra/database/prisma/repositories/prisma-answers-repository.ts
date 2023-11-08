@@ -28,6 +28,9 @@ export class PrismaAnswersRepository implements AnswersRepository {
       where: {
         questionId,
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
       take: 20,
       skip: (page - 1) * 20,
     })
@@ -41,7 +44,7 @@ export class PrismaAnswersRepository implements AnswersRepository {
     await this.prisma.answer.create({ data })
   }
 
-  async delete(answer: Answer) {
+  async save(answer: Answer) {
     const data = PrismaAnswerMapper.toPrisma(answer)
 
     await this.prisma.answer.update({
@@ -52,12 +55,10 @@ export class PrismaAnswersRepository implements AnswersRepository {
     })
   }
 
-  async save(answer: Answer) {
-    const data = PrismaAnswerMapper.toPrisma(answer)
-
+  async delete(answer: Answer) {
     await this.prisma.answer.delete({
       where: {
-        id: data.id,
+        id: answer.id.toString(),
       },
     })
   }
