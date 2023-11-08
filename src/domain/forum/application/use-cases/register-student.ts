@@ -30,9 +30,8 @@ export class RegisterStudentUseCase {
     email,
     password,
   }: RegisterStudentUseCaseRequest): Promise<RegisterStudentUseCaseResponse> {
-    const studentAlreadyExists = await this.studentsRepository.findByEmail(
-      email,
-    )
+    const studentAlreadyExists =
+      await this.studentsRepository.findByEmail(email)
 
     if (studentAlreadyExists) {
       return left(new StudentAlreadyExistsError(email))
