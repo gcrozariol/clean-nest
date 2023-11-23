@@ -10,33 +10,33 @@ import { PrismaService } from '@/infra/database/prisma/prisma.service'
 
 import { StudentFactory } from 'test/factories/make-student'
 import { QuestionFactory } from 'test/factories/make-question'
-import { QuestionCommentFactory } from 'test/factories/make-question-comment'
+import { AnswerFactory } from 'test/factories/make-answer'
 
-describe('Delete question comment (E2E)', () => {
+describe('Comment on answer (E2E)', () => {
   let app: INestApplication
   let studentFactory: StudentFactory
   let questionFactory: QuestionFactory
-  let questionCommentFactory: QuestionCommentFactory
+  let answerFactory: AnswerFactory
   let prisma: PrismaService
   let jwt: JwtService
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [StudentFactory, QuestionFactory, QuestionCommentFactory],
+      providers: [StudentFactory, QuestionFactory, AnswerFactory],
     }).compile()
 
     app = moduleRef.createNestApplication()
     studentFactory = moduleRef.get(StudentFactory)
     questionFactory = moduleRef.get(QuestionFactory)
-    questionCommentFactory = moduleRef.get(QuestionCommentFactory)
+    answerFactory = moduleRef.get(AnswerFactory)
     prisma = moduleRef.get(PrismaService)
     jwt = moduleRef.get(JwtService)
 
     await app.init()
   })
 
-  test('[DElETE] /questions/comments/:id', async () => {
+  test('[POST] /answers/:answerId/comments', async () => {
     const user = await studentFactory.makePrismaStudent()
 
     const accessToken = jwt.sign({ sub: user.id.toString() })
@@ -45,27 +45,28 @@ describe('Delete question comment (E2E)', () => {
       authorId: user.id,
     })
 
-    const questionCommment =
-      await questionCommentFactory.makePrismaQuestionComment({
-        authorId: user.id,
-        questionId: question.id,
-      })
+    const answer = await answerFactory.makePrismaAnswer({
+      authorId: user.id,
+      questionId: question.id,
+    })
 
-    const questionCommmentId = questionCommment.id.toString()
+    const answerId = answer.id.toString()
+
+    const content = 'New comment'
 
     const response = await request(app.getHttpServer())
-      .delete(`/questions/comments/${questionCommmentId}`)
+      .post(`/answers/${answerId}/comments`)
       .set('Authorization', `Bearer ${accessToken}`)
-      .send()
+      .send({ content })
 
-    expect(response.statusCode).toBe(204)
+    expect(response.statusCode).toBe(201)
 
-    const commentOnDatabase = await prisma.comment.findUnique({
+    const commentOnDatabase = await prisma.comment.findFirst({
       where: {
-        id: questionCommmentId,
+        content,
       },
     })
 
-    expect(commentOnDatabase).toBeNull()
+    expect(commentOnDatabase).toBeTruthy()
   })
 })
