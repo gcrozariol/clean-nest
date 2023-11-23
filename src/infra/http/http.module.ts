@@ -16,6 +16,7 @@ import { RegisterStudentUseCase } from '@/domain/forum/application/use-cases/reg
 import { AuthenticateStudentUseCase } from '@/domain/forum/application/use-cases/authenticate-student'
 import { GetQuestionBySlugUseCase } from '@/domain/forum/application/use-cases/get-question-by-slug'
 import { EditAnswerUseCase } from '@/domain/forum/application/use-cases/edit-answer'
+import { EditQuestionUseCase } from '@/domain/forum/application/use-cases/edit-question'
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
@@ -34,6 +35,7 @@ import { EditAnswerUseCase } from '@/domain/forum/application/use-cases/edit-ans
     AuthenticateStudentUseCase,
     GetQuestionBySlugUseCase,
     EditAnswerUseCase,
+    EditQuestionUseCase,
   ],
 })
 export class HttpModule {}
