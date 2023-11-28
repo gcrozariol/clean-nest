@@ -31,7 +31,21 @@ export class PrismaQuestionAttachmentsRepository
   }
 
   async deleteMany(attachments: QuestionAttachment[]) {
-    throw new Error('Method not implemented.')
+    if (attachments.length === 0) {
+      return
+    }
+
+    const attachmentIds = attachments.map((attachment) => {
+      return attachment.id.toString()
+    })
+
+    await this.prisma.attachment.deleteMany({
+      where: {
+        id: {
+          in: attachmentIds,
+        },
+      },
+    })
   }
 
   async deleteManyByQuestionId(questionId: string) {
