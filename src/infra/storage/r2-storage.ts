@@ -29,7 +29,7 @@ export class R2Storage implements Uploader {
   async upload({ fileName, fileType, body }: UploadParams) {
     const uploadId = randomUUID()
 
-    const uniqueFileName = `${uploadId}-${fileName}}`
+    const uniqueFileName = `${uploadId}-${fileName}`
 
     await this.client.send(
       new PutObjectCommand({
