@@ -1,5 +1,5 @@
-import { Either, left, right } from '@/core/either'
 import { Injectable } from '@nestjs/common'
+import { Either, left, right } from '@/core/either'
 import { InvalidAttachmentError } from './errors/invalid-attachment-error'
 import { Attachment } from '../../enterprise/entities/attachment'
 import { AttachmentsRepository } from '../repositories/attachments-repository'
