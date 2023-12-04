@@ -46,7 +46,7 @@ describe('Create Question Use Case', () => {
     ])
   })
 
-  it('should be persist attachments when creating a new question', async () => {
+  it('should persist attachments when creating a new question', async () => {
     const result = await sut.execute({
       authorId: '1',
       title: 'New title',
