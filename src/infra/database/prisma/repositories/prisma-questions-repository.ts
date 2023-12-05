@@ -6,6 +6,7 @@ import { PrismaService } from '../prisma.service'
 import { PrismaQuestionMapper } from '../mappers/prisma-question-mapper'
 import { QuestionAttachmentsRepository } from '@/domain/forum/application/repositories/question-attachments-repository'
 import { PrismaQuestionDetailsMapper } from '../mappers/prisma-question-details-mapper'
+import { DomainEvents } from '@/core/events/domain-events'
 
 @Injectable()
 export class PrismaQuestionsRepository implements QuestionsRepository {
@@ -72,6 +73,18 @@ export class PrismaQuestionsRepository implements QuestionsRepository {
     return questions.map(PrismaQuestionMapper.toDomain)
   }
 
+  async create(question: Question) {
+    const data = PrismaQuestionMapper.toPrisma(question)
+
+    await this.prisma.question.create({ data })
+
+    await this.questionAttachmentsRepository.createMany(
+      question.attachments.getItems(),
+    )
+
+    DomainEvents.dispatchEventsForAggregate(question.id)
+  }
+
   async save(question: Question) {
     const data = PrismaQuestionMapper.toPrisma(question)
 
@@ -91,16 +104,8 @@ export class PrismaQuestionsRepository implements QuestionsRepository {
         question.attachments.getRemovedItems(),
       ),
     ])
-  }
 
-  async create(question: Question) {
-    const data = PrismaQuestionMapper.toPrisma(question)
-
-    await this.prisma.question.create({ data })
-
-    await this.questionAttachmentsRepository.createMany(
-      question.attachments.getItems(),
-    )
+    DomainEvents.dispatchEventsForAggregate(question.id)
   }
 
   async delete(question: Question) {
