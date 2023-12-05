@@ -11,6 +11,7 @@ import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { StudentFactory } from 'test/factories/make-student'
 import { QuestionFactory } from 'test/factories/make-question'
 import { waitFor } from 'test/utils/wait-for'
+import { DomainEvents } from '@/core/events/domain-events'
 
 describe('On answer created (E2E)', () => {
   let app: INestApplication
@@ -30,6 +31,8 @@ describe('On answer created (E2E)', () => {
     questionFactory = moduleRef.get(QuestionFactory)
     prisma = moduleRef.get(PrismaService)
     jwt = moduleRef.get(JwtService)
+
+    DomainEvents.shouldRun = true
 
     await app.init()
   })
