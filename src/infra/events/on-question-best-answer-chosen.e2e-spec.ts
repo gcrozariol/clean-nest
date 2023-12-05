@@ -10,31 +10,34 @@ import { PrismaService } from '@/infra/database/prisma/prisma.service'
 
 import { StudentFactory } from 'test/factories/make-student'
 import { QuestionFactory } from 'test/factories/make-question'
+import { AnswerFactory } from 'test/factories/make-answer'
 import { waitFor } from 'test/utils/wait-for'
 
-describe('On answer created (E2E)', () => {
+describe('On question best answer chosen (E2E)', () => {
   let app: INestApplication
   let studentFactory: StudentFactory
   let questionFactory: QuestionFactory
+  let answerFactory: AnswerFactory
   let prisma: PrismaService
   let jwt: JwtService
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       imports: [AppModule, DatabaseModule],
-      providers: [StudentFactory, QuestionFactory],
+      providers: [StudentFactory, QuestionFactory, AnswerFactory],
     }).compile()
 
     app = moduleRef.createNestApplication()
     studentFactory = moduleRef.get(StudentFactory)
     questionFactory = moduleRef.get(QuestionFactory)
+    answerFactory = moduleRef.get(AnswerFactory)
     prisma = moduleRef.get(PrismaService)
     jwt = moduleRef.get(JwtService)
 
     await app.init()
   })
 
-  it('should send a notification when creating an answer', async () => {
+  it('should send a notification when choosing question best answer', async () => {
     const user = await studentFactory.makePrismaStudent()
 
     const accessToken = jwt.sign({ sub: user.id.toString() })
@@ -43,14 +46,17 @@ describe('On answer created (E2E)', () => {
       authorId: user.id,
     })
 
-    const questionId = question.id.toString()
+    const answer = await answerFactory.makePrismaAnswer({
+      questionId: question.id,
+      authorId: user.id,
+    })
 
-    const content = 'New Answer'
+    const answerId = answer.id.toString()
 
     await request(app.getHttpServer())
-      .post(`/questions/${questionId}/answers`)
+      .patch(`/answers/${answerId}/choose-as-best`)
       .set('Authorization', `Bearer ${accessToken}`)
-      .send({ content })
+      .send()
 
     await waitFor(async () => {
       const notificationOnDatabase = await prisma.notification.findFirst({
