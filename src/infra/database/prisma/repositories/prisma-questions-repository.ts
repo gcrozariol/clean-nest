@@ -120,8 +120,11 @@ export class PrismaQuestionsRepository implements QuestionsRepository {
       this.questionAttachmentsRepository.deleteMany(
         question.attachments.getRemovedItems(),
       ),
-      this.cacheRepository.delete(`question:${question.slug}:details`),
     ])
+
+    const slug = question.slug.value
+
+    this.cacheRepository.delete(`question:${slug}:details`)
 
     DomainEvents.dispatchEventsForAggregate(question.id)
   }

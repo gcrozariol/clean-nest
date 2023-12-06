@@ -8,7 +8,7 @@ import { StudentFactory } from 'test/factories/make-student'
 import { QuestionFactory } from 'test/factories/make-question'
 import { QuestionCommentFactory } from 'test/factories/make-question-comment'
 
-describe('Fetch question commments (E2E)', () => {
+describe('Fetch question comments (E2E)', () => {
   let app: INestApplication
   let studentFactory: StudentFactory
   let questionFactory: QuestionFactory
@@ -30,7 +30,7 @@ describe('Fetch question commments (E2E)', () => {
     await app.init()
   })
 
-  test('[GET] /questions/:questionId/commments', async () => {
+  test('[GET] /questions/:questionId/comments', async () => {
     const user = await studentFactory.makePrismaStudent({
       name: 'John Doe',
     })
